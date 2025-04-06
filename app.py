@@ -14,7 +14,7 @@ app.secret_key = os.urandom(24)
 vision_client = vision.ImageAnnotatorClient()
 tts_client = texttospeech.TextToSpeechClient()
 model = GenerativeModel("gemini-1.5-pro")
-wiki = wikipediaapi.Wikipedia(user_agent='HeritageExplorer/1.0 (sanchit.thakare@gmail.com)', language='en')
+wiki = wikipediaapi.Wikipedia(user_agent='HeritageExplorer/1.0 (contact@email.com)', language='en')
 
 UPLOAD_FOLDER = 'static/uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -40,55 +40,45 @@ def generate_fun_facts(site_name, data):
     prompt = f"Generate 2 short, fascinating 'Did You Know?' facts about {site_name} based on: {data}"
     response = model.generate_content(prompt)
     text = response.text
-
- 
     facts = re.findall(r'(?:^|\n)(?:\d+\.|\-|\•)\s*(.*)', text)
-
     if not facts:
         facts = text.split('\n')
-
-    
     return [fact.strip() for fact in facts if fact.strip()][:3]
 
 def get_media(site_name):
-    youtube_url = f"https://www.googleapis.com/youtube/v3/search?part=snippet&q={site_name}+history&type=video&key=AIzaSyBwv-0H4p6Sitq66tkhI6FgPG0_N8r7DZw"
+    youtube_api_key = os.environ.get("YOUTUBE_API_KEY")
+    unsplash_access_key = os.environ.get("UNSPLASH_ACCESS_KEY")
+
+    youtube_url = f"https://www.googleapis.com/youtube/v3/search?part=snippet&q={site_name}+history&type=video&key={youtube_api_key}"
     response = requests.get(youtube_url).json()
     videos = [f"https://www.youtube.com/embed/{item['id']['videoId']}" for item in response.get('items', [])[:2]]
 
-    unsplash_url = f"https://api.unsplash.com/search/photos?query={site_name}&client_id=Uli30edN6v2XYP4_bKgW6sYwl1KFdlYFf31e2j13G2s"
+    unsplash_url = f"https://api.unsplash.com/search/photos?query={site_name}&client_id={unsplash_access_key}"
     response = requests.get(unsplash_url).json()
     images = [result['urls']['regular'] for result in response.get('results', [])[:4]]
 
     return videos, images
 
 def get_coordinates(site_name):
-    api_key = 'AIzaSyBwv-0H4p6Sitq66tkhI6FgPG0_N8r7DZw'
-    url = f"https://maps.googleapis.com/maps/api/geocode/json?address={site_name}&key={api_key}"
+    gmaps_api_key = os.environ.get("GMAPS_API_KEY")
+    url = f"https://maps.googleapis.com/maps/api/geocode/json?address={site_name}&key={gmaps_api_key}"
     response = requests.get(url).json()
     if response['status'] == 'OK':
         loc = response['results'][0]['geometry']['location']
         return loc['lat'], loc['lng']
     return None, None
 
-import requests
-
 def get_nearby_sites(lat, lng):
-    api_key = 'AIzaSyBwv-0H4p6Sitq66tkhI6FgPG0_N8r7DZw'
+    gmaps_api_key = os.environ.get("GMAPS_API_KEY")
     url = (
         f"https://maps.googleapis.com/maps/api/place/nearbysearch/json"
-        f"?location={lat},{lng}&radius=5000&type=tourist_attraction&key={api_key}"
+        f"?location={lat},{lng}&radius=5000&type=tourist_attraction&key={gmaps_api_key}"
     )
-    
     response = requests.get(url)
-    
-    # Safety check for request
     if response.status_code != 200:
         print("Request failed:", response.text)
         return []
-
     data = response.json()
-    
-    # Google API returns 'status': 'OK' if all is well
     if data.get('status') != 'OK':
         print("Google API Error:", data.get('status'))
         return []
