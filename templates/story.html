@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ site.name }} - Heritage Explorer</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .gallery img { width: 100%; margin-bottom: 15px; border-radius: 5px; }
+        #map { height: 400px; width: 100%; border: 1px solid #ddd; }
+        #chat-window { border: 1px solid #ccc; height: 300px; overflow-y: scroll; padding: 10px; background: #fff; }
+        .user { text-align: right; color: #007bff; }
+        .model { text-align: left; color: #28a745; }
+        .fun-fact { background: #f1f1f1; padding: 10px; margin: 10px 0; border-left: 5px solid #007bff; }
+        body { background: #f8f9fa; }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?key=your_google_maps_api_key"></script>
+    <script>
+        function initMap() {
+            var lat = {{ site.lat or 0 }};
+            var lng = {{ site.lng or 0 }};
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 14,
+                center: {lat: lat, lng: lng}
+            });
+            var marker = new google.maps.Marker({position: {lat: lat, lng: lng}, map: map, title: "{{ site.name }}"});
+            {% for nearby in site.nearby_sites %}
+                new google.maps.Marker({
+                    position: {lat: {{ nearby.lat }}, lng: {{ nearby.lng }}},
+                    map: map,
+                    title: "{{ nearby.name }}",
+                    icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
+                });
+            {% endfor %}
+        }
+
+        function sendMessage() {
+            var msg = document.getElementById('user-input').value;
+            if (msg) {
+                var chat = document.getElementById('chat-window');
+                chat.innerHTML += '<div class="user">' + msg + '</div>';
+                fetch('/chat', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: 'message=' + encodeURIComponent(msg)
+                })
+                .then(response => response.text())
+                .then(data => {
+                    chat.innerHTML += '<div class="model">' + data + '</div>';
+                    chat.scrollTop = chat.scrollHeight;
+                });
+                document.getElementById('user-input').value = '';
+            }
+        }
+    </script>
+</head>
+<body onload="initMap()">
+    <div class="container mt-4">
+        <h1 class="text-center">{{ site.name }}</h1>
+        
+        <div class="section mt-4">
+            <h2>Your Story</h2>
+            <p>{{ site.story }}</p>
+            <audio controls>
+              <source src="{{ url_for('stream_audio') }}" type="audio/mpeg">
+              Your browser does not support the audio element.
+            </audio>
+            <div class="mt-2">
+                <span>Listen in: </span>
+                <a href="/change_language/en-US" class="btn btn-sm btn-outline-primary">English</a>
+                <a href="/change_language/es-ES" class="btn btn-sm btn-outline-primary">Spanish</a>
+                <a href="/change_language/fr-FR" class="btn btn-sm btn-outline-primary">French</a>
+            </div>
+        </div>
+        
+        <div class="section gallery mt-4">
+            <h2>Visual Journey</h2>
+            <div class="row">
+                {% for image in site.images %}
+                    <div class="col-md-3"><img src="{{ image }}" alt="{{ site.name }}"></div>
+                {% endfor %}
+                {% for video in site.videos %}
+                    <div class="col-md-6"><iframe width="100%" height="315" src="{{ video }}" frameborder="0" allowfullscreen></iframe></div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="section mt-4">
+            <h2>Explore the Location</h2>
+            <div id="map"></div>
+            <p class="mt-2"><small>Green markers show nearby heritage sites!</small></p>
+        </div>
+        
+        <div class="section mt-4">
+            <h2>Did You Know?</h2>
+            {% for fact in site.fun_facts %}
+                <div class="fun-fact">{{ fact }}</div>
+            {% endfor %}
+        </div>
+        
+        <div class="section mt-4">
+            <h2>Ask Your Virtual Guide</h2>
+            <div id="chat-window"></div>
+            <div class="input-group mt-2">
+                <input id="user-input" type="text" class="form-control" placeholder="Ask about {{ site.name }}...">
+                <div class="input-group-append">
+                    <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section my-4 text-center">
+            <a href="/tour" class="btn btn-primary mr-2">Start Guided Tour</a>
+            <a href="/" class="btn btn-secondary">Back Home</a>
+        </div>
+    </div>
+</body>
+</html>

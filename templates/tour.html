@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Guided Tour - {{ site.name }}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .tour-image { width: 100%; margin-bottom: 20px; border-radius: 5px; }
+        body { background: #f8f9fa; }
+        .container { max-width: 800px; }
+    </style>
+</head>
+<body>
+    <div class="container my-4">
+        <h1 class="text-center">Guided Tour: Step {{ index + 1 }} of {{ total }}</h1>
+        {% if image %}
+            <img src="{{ image }}" class="tour-image" alt="Tour Image">
+        {% endif %}
+        <p>{{ section }}</p>
+        <audio controls>
+            <source src="{{ url_for('stream_audio') }}" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        <div class="text-center">
+            {% if index > 0 %}
+                <a href="/tour/prev" class="btn btn-secondary mr-2">Previous</a>
+            {% endif %}
+            {% if index < total - 1 %}
+                <a href="/tour/next" class="btn btn-primary mr-2">Next</a>
+            {% else %}
+                <a href="/story" class="btn btn-success">Finish Tour</a>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

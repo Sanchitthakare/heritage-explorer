@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Heritage Explorer - Discover Historic Sites</title>
+
+    <!-- Bootstrap and Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../static/css/style.css" />
+  </head>
+  <body>
+    <div class="landing-container">
+      <div class="hero-section">
+        <div class="hero-content">
+          <h1 class="site-title">Heritage Explorer</h1>
+          <p class="lead">
+            Uncover the hidden stories of historic sites with artificial
+            intelligence. Simply upload a photo and embark on a journey through
+            time.
+          </p>
+
+          <form action="/upload" method="post" enctype="multipart/form-data">
+            <div class="file-upload-wrapper">
+              <button
+                type="button"
+                class="file-input-btn"
+                onclick="document.getElementById('fileInput').click()"
+              >
+                <i class="fas fa-upload mr-2"></i>Upload Site Photo
+              </button>
+              <input
+                type="file"
+                id="fileInput"
+                name="photo"
+                accept="image/*"
+                required
+                style="display: none"
+              />
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg btn-block">
+              Start Your Historical Journey
+            </button>
+          </form>
+        </div>
+
+        <div class="hero-illustration">
+          <svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+            <!-- Background Gradient -->
+            <defs>
+              <linearGradient id="bgGradient" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#FFB74D" />
+                <stop offset="100%" stop-color="#D84315" />
+              </linearGradient>
+            </defs>
+            <rect width="800" height="400" fill="url(#bgGradient)" />
+
+            <!-- Sun -->
+            <circle cx="100" cy="80" r="40" fill="rgba(255, 255, 255, 0.3)" />
+
+            <!-- Taj Mahal Dome -->
+            <path
+              d="M300,200 Q400,100 500,200"
+              fill="white"
+              stroke="#FFF8E1"
+              stroke-width="3"
+            />
+            <rect
+              x="320"
+              y="200"
+              width="160"
+              height="80"
+              fill="white"
+              opacity="0.9"
+            />
+
+            <!-- Minarets -->
+            <rect
+              x="290"
+              y="180"
+              width="20"
+              height="100"
+              fill="white"
+              opacity="0.8"
+            />
+            <rect
+              x="490"
+              y="180"
+              width="20"
+              height="100"
+              fill="white"
+              opacity="0.8"
+            />
+
+            <!-- India Gate (Abstract) -->
+            <path
+              d="M550,250 L600,150 L650,250 Z"
+              fill="rgba(255,255,255,0.6)"
+              stroke="white"
+              stroke-width="2"
+            />
+            <rect
+              x="570"
+              y="250"
+              width="60"
+              height="50"
+              fill="white"
+              opacity="0.8"
+            />
+
+            <!-- Qutub Minar (Abstract Spirals) -->
+            <path
+              d="M120,140 Q140,100 160,140 T200,140"
+              stroke="white"
+              stroke-width="4"
+              fill="none"
+            />
+
+            <!-- Floating Traditional Motifs -->
+            <circle cx="700" cy="100" r="20" fill="rgba(255,255,255,0.5)" />
+            <circle cx="720" cy="120" r="10" fill="rgba(255,255,255,0.3)" />
+            <circle cx="680" cy="140" r="15" fill="rgba(255,255,255,0.4)" />
+
+            <!-- Stylized Hills/Grass -->
+            <path
+              d="M0,300 Q200,250 400,300 T800,300 V400 H0 Z"
+              fill="rgba(255,255,255,0.2)"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <div class="features">
+        <div class="feature">
+          <div class="feature-icon">
+            <i class="fas fa-camera"></i>
+          </div>
+          <h3>AI-Powered Recognition</h3>
+          <p>
+            Advanced machine learning identifies historical sites instantly.
+          </p>
+        </div>
+
+        <div class="feature">
+          <div class="feature-icon">
+            <i class="fas fa-book-open"></i>
+          </div>
+          <h3>Rich Storytelling</h3>
+          <p>Detailed historical narratives brought to life with multimedia.</p>
+        </div>
+
+        <div class="feature">
+          <div class="feature-icon">
+            <i class="fas fa-globe"></i>
+          </div>
+          <h3>Global Heritage</h3>
+          <p>Explore sites from around the world with a single click.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Font Awesome Script -->
+    <script
+      src="https://kit.fontawesome.com/your-kit-id.js"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
